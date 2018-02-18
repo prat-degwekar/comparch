@@ -137,6 +137,7 @@ rule convert( string str )
 }
 
 void minm();
+void MaxPartition( vector<vector<int>> & );
 
 rule sets[250];
 
@@ -172,7 +173,22 @@ int main()
     int k = sets[0].distance( sets[1] );
     cout<<k<<endl;
 
-    minm();
+    vector < vector <int> > parts;
+
+    //minm();
+    MaxPartition(parts);
+
+    cout<<"in main : \n\n";
+
+    for( vector< vector <int> > :: iterator jt = parts.begin() ; jt != parts.end() ; jt++ )   //or auto i : parts
+    {
+        vector < int > jj = *jt;
+        for( int it : *jt )
+        {
+            cout<<" , "<<it;
+        }
+        cout<<endl;
+    }
 
     return 0;
 }
@@ -249,6 +265,92 @@ void minm()
             //parts[ii] = another;
             int kk;
             cin>>kk;
+        }
+        else
+            flag = 0;
+    }
+
+    int index=0;
+
+    for(int i=0 ; i<parts.size() ; i++)
+    {
+        if( parts[i].size() == 1 )
+        {
+            index = i;
+            break;
+        }
+    }
+
+    cout<<"index = "<<index<<endl;
+
+    for(int i=0 ; i<parts.size() ; i++)
+    {
+        if( parts[i].size() == 1 )
+        {
+            if( i == index )
+                continue;
+
+            parts[index].insert( parts[index].end() , parts[i].begin() , parts[i].end() );
+            parts[i].clear();
+        }
+    }
+
+    for( vector< vector <int> > :: iterator jt = parts.begin() ; jt != parts.end() ; jt++ , ii++ )   //or auto i : parts
+    {
+        vector < int > jj = *jt;
+        for( int it : *jt )
+        {
+            cout<<" , "<<it;
+        }
+        cout<<endl;
+    }
+}
+
+void MaxPartition( vector < vector <int> > &parts )
+{
+    vector <int> first;
+    first.push_back( 0 );
+
+    bool flag = 0;
+
+    parts.push_back( first );
+    int ii=0;
+
+    for( int i=1 ; i<5 ; i++ )
+    {
+        ii = 0;
+
+        for(int j=0 ; j<parts.size() ; j++ )
+        {
+            for( int it : parts[j] )
+                cout<<"it = "<<it<<endl;
+            for( int it : parts[j] )
+            {
+                int k = sets[i].distance( sets[ it ] );
+                cout<<" while adding, it = "<<it<<" , for rule : "<<i<<" and k = "<<k<<" , while its size = "<<parts[j].size()<<endl;
+                if( k == 0)
+                {
+                    flag = 1;
+                    parts[j].push_back( i );
+                    sets[i].setMaxPart( j );
+                    break;
+                }
+            }
+
+            if( flag )
+            {
+                //flag = 0;
+                break;
+            }
+            ii++;
+        }
+        //add a vector to parts with this
+
+        if( !flag )
+        {
+            vector <int> another;
+            another.push_back( i );
+            parts.push_back( another );
         }
         else
             flag = 0;
